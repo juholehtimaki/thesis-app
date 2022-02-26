@@ -7,7 +7,7 @@ import "dotenv/config";
 const app = new cdk.App();
 
 const env = {
-  region: process.env.REGION,
+  region: process.env.AWS_REGION,
   account: process.env.ACCOUNT_ID,
 };
 
