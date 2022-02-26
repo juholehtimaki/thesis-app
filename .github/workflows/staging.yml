@@ -16,12 +16,10 @@ jobs:
   # This workflow contains a single job called "build"
   deploy:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    steps:
-
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
-
+    runs-on: ubuntu-latest
+    steps:
       # Configure AWS credentials
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
