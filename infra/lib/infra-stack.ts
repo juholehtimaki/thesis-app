@@ -87,27 +87,23 @@ export class InfraStack extends Stack {
       retainOnDelete: false,
     });
 
-    const dynamoTable = new dynamodb.Table(
-      this,
-      `${variables.ENV_NAME}-table`,
-      {
-        tableName: "Notes",
-        partitionKey: {
-          name: "id",
-          type: dynamodb.AttributeType.STRING,
-        },
-        readCapacity: 1,
-        writeCapacity: 1,
-        removalPolicy: RemovalPolicy.DESTROY,
-      }
-    );
+    const dynamoTable = new dynamodb.Table(this, "DynamoDbTable", {
+      tableName: `${variables.ENV_NAME}-table`,
+      partitionKey: {
+        name: "id",
+        type: dynamodb.AttributeType.STRING,
+      },
+      readCapacity: 1,
+      writeCapacity: 1,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
 
     const apiLambda = new lambda.Function(
       this,
       `${variables.ENV_NAME}-lambda`,
       {
         runtime: lambda.Runtime.NODEJS_14_X,
-        code: new lambda.AssetCode("/resources"),
+        code: new lambda.AssetCode("./resources"),
         handler: "index.handler",
         tracing: lambda.Tracing.ACTIVE,
         environment: {
