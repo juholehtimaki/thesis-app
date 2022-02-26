@@ -14,11 +14,13 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  deploy:
-    # The type of runner that the job will run on
+  DeployToStaging:
+    # Environment variables from GitHub secrets
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     steps:
       # Configure AWS credentials
@@ -38,8 +40,8 @@ jobs:
           node-version: "16"
 
       # Runs a set of commands using the runners shell
-      - name: Install client dependencies and build the client
+      - name: Install client deps and build project
         run: cd client && npm ci && npm run build
 
       - name: Install infrastructure dependencies and deploy the project to AWS
-        run: cd infra && npm ci && npx cdk deploy ProductionInfraStrack
+        run: cd infra && npm ci && npx cdk deploy ProductionInfraStack
