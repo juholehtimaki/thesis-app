@@ -107,7 +107,7 @@ export class InfraStack extends Stack {
       `${variables.ENV_NAME}-lambda`,
       {
         runtime: lambda.Runtime.NODEJS_14_X,
-        code: new lambda.AssetCode("infra/resources"),
+        code: new lambda.AssetCode("/resources"),
         handler: "index.handler",
         tracing: lambda.Tracing.ACTIVE,
         environment: {
