@@ -1,7 +1,7 @@
-import React, { SyntheticEvent, useEffect, useState } from "react";
-import "./App.css";
-import axios from "axios";
-import List from "@mui/material/List";
+import React, { SyntheticEvent, useEffect, useState } from 'react';
+import './App.css';
+import axios from 'axios';
+import List from '@mui/material/List';
 import {
   Button,
   IconButton,
@@ -9,9 +9,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { v4 as uuidv4 } from "uuid";
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { v4 as uuidv4 } from 'uuid';
 
 const apiBaseUrl = process.env.REACT_APP_API;
 
@@ -20,17 +20,18 @@ interface NoteModel {
   text: string;
 }
 
-export const App = () => {
+function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
-  const [newNote, setNewNote] = useState("");
+  const [newNote, setNewNote] = useState('');
 
   useEffect(() => {
     const fetchInitialNotes = async () => {
       try {
         const { data } = await axios.get(`${apiBaseUrl}/notes`);
         setNotes(data.Items as NoteModel[]);
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(err);
       }
     };
     fetchInitialNotes();
@@ -46,9 +47,10 @@ export const App = () => {
     try {
       await axios.put(`${apiBaseUrl}/notes`, noteToPost);
       setNotes([...notes, noteToPost]);
-      setNewNote("");
-    } catch (e) {
-      console.log(e);
+      setNewNote('');
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
     }
   };
 
@@ -58,6 +60,7 @@ export const App = () => {
       const notesAfterDeletion = notes.filter((note) => note.id !== id);
       setNotes(notesAfterDeletion);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log(e);
     }
   };
@@ -92,6 +95,6 @@ export const App = () => {
       </header>
     </div>
   );
-};
+}
 
 export default App;
