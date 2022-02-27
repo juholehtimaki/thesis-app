@@ -52,6 +52,10 @@ jobs:
       - name: Build client
         run: cd client && npm run build:production
 
+      # Install Lambda dependencies
+      - name: Install lambda dependencies
+        run: cd infra/resources && npm ci
+
       # Deploy project to AWS
       - name: Install infrastructure dependencies and deploy the project to AWS
         run: cd infra && npm ci && npx cdk deploy ProductionInfraStack --require-approval never
