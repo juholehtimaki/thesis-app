@@ -36,15 +36,9 @@ jobs:
         with:
           node-version: "16"
 
-<<<<<<< HEAD
       # Install client dependencies
       - name: Install client dependencies
         run: cd client && npm ci
-=======
-      # Runs a set of commands using the runners shell
-      - name: Install client deps and build project
-        run: cd client && npm ci && npm run build:staging
->>>>>>> origin/main
 
       # Run eslint
       - name: Run eslint
