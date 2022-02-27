@@ -14,7 +14,7 @@ import {
   aws_apigateway as apigateway,
 } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { vars } from "./types";
+import { vars } from "./env";
 
 export class InfraStack extends Stack {
   constructor(
