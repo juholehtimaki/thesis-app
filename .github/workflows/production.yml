@@ -54,4 +54,4 @@ jobs:
 
       # Deploy project to AWS
       - name: Install infrastructure dependencies and deploy the project to AWS
-        run: cd infra && npm ci && npx cdk deploy StagingInfraStack --require-approval never
+        run: cd infra && npm ci && npx cdk deploy ProductionInfraStack --require-approval never
