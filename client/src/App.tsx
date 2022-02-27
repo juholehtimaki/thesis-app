@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 import List from '@mui/material/List';
+=======
+import React, { SyntheticEvent, useEffect, useState } from "react";
+import "./App.css";
+import axios from "axios";
+import List from "@mui/material/List";
+>>>>>>> origin/main
 import {
   Button,
   IconButton,
@@ -9,9 +16,15 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+<<<<<<< HEAD
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { v4 as uuidv4 } from 'uuid';
+=======
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { v4 as uuidv4 } from "uuid";
+>>>>>>> origin/main
 
 const apiBaseUrl = process.env.REACT_APP_API;
 
@@ -19,6 +32,7 @@ interface NoteModel {
   id: string;
   text: string;
 }
+<<<<<<< HEAD
 
 function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
@@ -65,6 +79,51 @@ function App() {
     }
   };
 
+=======
+
+export const App = () => {
+  const [notes, setNotes] = useState<NoteModel[]>([]);
+  const [newNote, setNewNote] = useState("");
+
+  useEffect(() => {
+    const fetchInitialNotes = async () => {
+      try {
+        const { data } = await axios.get(`${apiBaseUrl}/notes`);
+        setNotes(data.Items as NoteModel[]);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchInitialNotes();
+  }, []);
+
+  const createNote = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    if (newNote.length === 0) return;
+    const noteToPost: NoteModel = {
+      id: uuidv4(),
+      text: newNote,
+    };
+    try {
+      await axios.put(`${apiBaseUrl}/notes`, noteToPost);
+      setNotes([...notes, noteToPost]);
+      setNewNote("");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const deleteNote = async (id: string) => {
+    try {
+      await axios.delete(`${apiBaseUrl}/notes/${id}`);
+      const notesAfterDeletion = notes.filter((note) => note.id !== id);
+      setNotes(notesAfterDeletion);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+>>>>>>> origin/main
   return (
     <div className="App">
       <header className="App-header">
@@ -95,6 +154,6 @@ function App() {
       </header>
     </div>
   );
-}
+};
 
 export default App;
