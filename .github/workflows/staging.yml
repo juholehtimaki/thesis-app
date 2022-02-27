@@ -1,15 +1,12 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: STAGING_CI
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [dev]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -44,4 +41,4 @@ jobs:
         run: cd client && npm ci && npm run build:staging
 
       - name: Install infrastructure dependencies and deploy the project to AWS
-        run: cd infra && npm ci && npx cdk deploy StagingInfraStack
+        run: cd infra && npm ci && npx cdk deploy StagingInfraStack --require-approval never

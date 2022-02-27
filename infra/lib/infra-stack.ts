@@ -166,11 +166,7 @@ export class InfraStack extends Stack {
         ],
         allowMethods: ["GET", "POST", "PUT", "DELETE"],
         allowCredentials: true,
-        allowOrigins: [
-          // FOR DEV PURPOSES
-          "http://localhost:3000",
-          `https://${variables.FRONTEND_DOMAIN}`,
-        ],
+        allowOrigins: apigateway.Cors.ALL_ORIGINS,
       },
     });
 
