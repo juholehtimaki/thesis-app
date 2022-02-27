@@ -11,7 +11,7 @@ export const stagingVariables: vars = {
 
 export const productionVariables: vars = {
   DOMAIN,
-  BACKEND_DOMAIN: "backendapi.choso-dev.com",
+  BACKEND_DOMAIN: "productionapi.choso-dev.com",
   FRONTEND_DOMAIN: "productionapp.choso-dev.com",
   ENV_NAME: "production",
 };
