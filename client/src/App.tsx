@@ -59,9 +59,9 @@ function App() {
       await axios.delete(`${apiBaseUrl}/notes/${id}`);
       const notesAfterDeletion = notes.filter((note) => note.id !== id);
       setNotes(notesAfterDeletion);
-    } catch (e) {
+    } catch (err) {
       // eslint-disable-next-line no-console
-      console.log(e);
+      console.log(err);
     }
   };
 
