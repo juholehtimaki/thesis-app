@@ -4,6 +4,6 @@ import App from './App';
 
 test('Render note header', () => {
   render(<App />);
-  const linkElement = screen.getByText(/Submit a new note:sss/i);
+  const linkElement = screen.getByText(/Submit a new note:/i);
   expect(linkElement).toBeInTheDocument();
 });
