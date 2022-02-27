@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: STAGING_CI
 
 # Controls when the workflow will run
 on:
@@ -8,13 +8,10 @@ on:
   push:
     branches: [dev]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  DeployToStaging:
+  # This workflow contains a single job called "ci"
+  ci:
     # Environment variables from GitHub secrets
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -39,9 +36,26 @@ jobs:
         with:
           node-version: "16"
 
-      # Runs a set of commands using the runners shell
-      - name: Install client deps and build project
-        run: cd client && npm ci && npm run build:staging
+      # Install client dependencies
+      - name: Install client dependencies
+        run: cd client && npm ci
 
+      # Run eslint
+      - name: Run eslint
+        run: cd client && npm run lint
+
+      # Run tests
+      - name: Run tests
+        run: cd client && npm run test
+
+      # Build client
+      - name: Build client
+        run: cd client && npm run build:staging
+
+      # Install Lambda dependencies
+      - name: Install lambda dependencies
+        run: cd infra/resources && npm ci
+
+      # Deploy project to AWS
       - name: Install infrastructure dependencies and deploy the project to AWS
-        run: cd infra && npm ci && npx cdk deploy StagingInfraStack
+        run: cd infra && npm ci && npx cdk deploy StagingInfraStack --require-approval never

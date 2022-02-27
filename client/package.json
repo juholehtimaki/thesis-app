@@ -19,6 +19,7 @@
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
     "typescript": "^4.5.5",
+    "uuid": "^8.3.2",
     "uuidv4": "^6.2.12",
     "web-vitals": "^2.1.4"
   },
@@ -26,6 +27,7 @@
     "start": "REACT_APP_API='https://stagingapi.choso-dev.com' react-scripts start",
     "build:staging": "REACT_APP_API='https://stagingapi.choso-dev.com' react-scripts build",
     "build:production": "REACT_APP_API='https://productionapi.choso-dev.com' react-scripts build",
+    "lint": "eslint --ext ts,tsx src",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -48,6 +50,17 @@
     ]
   },
   "devDependencies": {
-    "env-cmd": "^10.1.0"
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.10.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.2",
+    "eslint-plugin-react-hooks": "^4.3.0"
   }
 }

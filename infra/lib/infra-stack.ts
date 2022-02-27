@@ -53,8 +53,9 @@ export class InfraStack extends Stack {
       {
         originConfigs: [
           {
-            s3OriginSource: {
-              s3BucketSource: siteBucket,
+            customOriginSource: {
+              domainName: siteBucket.bucketWebsiteDomainName,
+              originProtocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
             },
             behaviors: [{ isDefaultBehavior: true }],
           },
@@ -166,6 +167,7 @@ export class InfraStack extends Stack {
         ],
         allowMethods: ["GET", "POST", "PUT", "DELETE"],
         allowCredentials: true,
+        //allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowOrigins: [
           // FOR DEV PURPOSES
           "http://localhost:3000",
