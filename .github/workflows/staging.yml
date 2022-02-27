@@ -41,7 +41,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Install client deps and build project
-        run: cd client && npm ci && npm run build
+        run: cd client && npm ci && npm run build:staging
 
       - name: Install infrastructure dependencies and deploy the project to AWS
         run: cd infra && npm ci && npx cdk deploy StagingInfraStack
