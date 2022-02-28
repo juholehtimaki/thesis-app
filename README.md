@@ -1,6 +1,6 @@
 # Fullstack serverless AWS project for thesis
 
-This project creates two seperate serverless AWS insfrastructures for production and staging environments. CI/CD pipeline is done via GitHub Actions. Changes in main branch to production environment and changes in dev branch to staging environment.
+This project creates two seperate serverless AWS insfrastructures for production and staging environments. CI/CD pipeline is done via GitHub Actions. Changes in main branch are deployed to production environment and changes in dev branch are deployed to staging environment.
 
 Technologies:
 
