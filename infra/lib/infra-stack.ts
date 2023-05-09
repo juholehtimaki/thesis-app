@@ -31,10 +31,16 @@ export class InfraStack extends Stack {
 
     const siteBucket = new s3.Bucket(this, "SiteBucket", {
       bucketName: variables.FRONTEND_DOMAIN,
+      removalPolicy: RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html",
       publicReadAccess: true,
-      removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
+      blockPublicAccess: {
+        blockPublicAcls: false,
+        blockPublicPolicy: false,
+        ignorePublicAcls: false,
+        restrictPublicBuckets: false,
+      },
     });
 
     const siteCertificate = new acm.DnsValidatedCertificate(
