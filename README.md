@@ -17,7 +17,7 @@ The following secrets should be saved to GitHub Secrets in order to the CI/CD pi
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_REGION`
 
-For local cdk deployments create an `.env` file to `/infra` directory. The `.env`. The `.env` file should contain the following:
+For local cdk deployments create an `.env` file to `/infra` directory. The `.env` file should contain the following:
 
 ```
 ACCOUNT_ID = <YOUR_AWS_ACCOUNT_ID>

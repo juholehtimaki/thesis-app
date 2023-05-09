@@ -24,9 +24,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "REACT_APP_API='https://stagingapi.choso-dev.com' react-scripts start",
-    "build:staging": "REACT_APP_API='https://stagingapi.choso-dev.com' react-scripts build",
-    "build:production": "REACT_APP_API='https://productionapi.choso-dev.com' react-scripts build",
+    "start": "REACT_APP_API='https://stagingapi.juholehtimaki.com' react-scripts start",
+    "build:staging": "REACT_APP_API='https://stagingapi.juholehtimaki.com' react-scripts build",
+    "build:production": "REACT_APP_API='https://productionapi.juholehtimaki.com' react-scripts build",
     "lint": "eslint --ext ts,tsx src",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
