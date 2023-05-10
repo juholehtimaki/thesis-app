@@ -9,10 +9,11 @@ import {
   aws_cloudfront as cloudfront,
   aws_route53_targets as targets,
   aws_dynamodb as dynamodb,
-  aws_lambda as lambda,
+  aws_lambda_nodejs as lambda,
   aws_iam as iam,
   aws_apigateway as apigateway,
 } from "aws-cdk-lib";
+import { Tracing } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import { vars } from "./env";
 
@@ -105,17 +106,16 @@ export class InfraStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    const apiLambda = new lambda.Function(
+    const apiLambda = new lambda.NodejsFunction(
       this,
       `${variables.ENV_NAME}-lambda`,
       {
-        runtime: lambda.Runtime.NODEJS_14_X,
-        code: new lambda.AssetCode("./resources"),
-        handler: "index.handler",
-        tracing: lambda.Tracing.ACTIVE,
+        entry: "functions/index.ts",
+        handler: "handler",
         environment: {
           dynamoTableName: dynamoTable.tableName,
         },
+        tracing: Tracing.ACTIVE,
       }
     );
 
@@ -173,7 +173,6 @@ export class InfraStack extends Stack {
         ],
         allowMethods: ["GET", "POST", "PUT", "DELETE"],
         allowCredentials: true,
-        //allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowOrigins: [
           // FOR DEV PURPOSES
           "http://localhost:3000",
@@ -186,9 +185,9 @@ export class InfraStack extends Stack {
     const note = notes.addResource("{id}");
 
     notes.addMethod("GET", new apigateway.LambdaIntegration(apiLambda));
-    notes.addMethod("PUT", new apigateway.LambdaIntegration(apiLambda));
-    note.addMethod("POST", new apigateway.LambdaIntegration(apiLambda));
+    notes.addMethod("POST", new apigateway.LambdaIntegration(apiLambda));
     note.addMethod("GET", new apigateway.LambdaIntegration(apiLambda));
+    note.addMethod("PUT", new apigateway.LambdaIntegration(apiLambda));
     note.addMethod("DELETE", new apigateway.LambdaIntegration(apiLambda));
 
     new route53.ARecord(this, "BackendRecord", {
