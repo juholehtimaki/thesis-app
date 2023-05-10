@@ -10,7 +10,6 @@ import {
   aws_route53_targets as targets,
   aws_dynamodb as dynamodb,
   aws_lambda_nodejs as lambda,
-  aws_iam as iam,
   aws_apigateway as apigateway,
 } from "aws-cdk-lib";
 import { Tracing } from "aws-cdk-lib/aws-lambda";
@@ -119,27 +118,7 @@ export class InfraStack extends Stack {
       }
     );
 
-    const tablePermissions = new iam.PolicyStatement({
-      actions: [
-        "dynamodb:BatchGetItem",
-        "dynamodb:GetItem",
-        "dynamodb:Scan",
-        "dynamodb:Query",
-        "dynamodb:BatchWriteItem",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem",
-        "dynamodb:DeleteItem",
-        "xray:PutTraceSegments",
-        "xray:PutTelemetryRecords",
-      ],
-      resources: [dynamoTable.tableArn],
-    });
-
-    apiLambda.role?.attachInlinePolicy(
-      new iam.Policy(this, `${variables.ENV_NAME}-tablePermissions`, {
-        statements: [tablePermissions],
-      })
-    );
+    dynamoTable.grantReadWriteData(apiLambda);
 
     const apiCertificate = new acm.DnsValidatedCertificate(
       this,

@@ -44,13 +44,13 @@ jobs:
       - name: Run eslint
         run: cd client && npm run lint
 
-      # Run tests
-      - name: Run tests
-        run: cd client && npm run test
-
       # Build client
       - name: Build client
         run: cd client && npm run build:production
+
+      # Run tests
+      - name: Run tests
+        run: cd client && npm run test
 
       # Deploy project to AWS
       - name: Install infrastructure dependencies and deploy the project to AWS
