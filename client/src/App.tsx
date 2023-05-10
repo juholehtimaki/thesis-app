@@ -26,13 +26,8 @@ function App() {
 
   useEffect(() => {
     const fetchInitialNotes = async () => {
-      try {
-        const { data } = await axios.get(`${apiBaseUrl}/notes`);
-        setNotes(data.Items as NoteModel[]);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.log(err);
-      }
+      const { data } = await axios.get(`${apiBaseUrl}/notes`);
+      setNotes(data.Items as NoteModel[]);
     };
     fetchInitialNotes();
   }, []);
@@ -44,25 +39,15 @@ function App() {
       id: uuidv4(),
       text: newNote,
     };
-    try {
-      await axios.put(`${apiBaseUrl}/notes`, noteToPost);
-      setNotes([...notes, noteToPost]);
-      setNewNote('');
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    }
+    await axios.put(`${apiBaseUrl}/notes`, {});
+    setNotes([...notes, noteToPost]);
+    setNewNote('');
   };
 
   const deleteNote = async (id: string) => {
-    try {
-      await axios.delete(`${apiBaseUrl}/notes/${id}`);
-      const notesAfterDeletion = notes.filter((note) => note.id !== id);
-      setNotes(notesAfterDeletion);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    }
+    await axios.delete(`${apiBaseUrl}/notes/${id}`);
+    const notesAfterDeletion = notes.filter((note) => note.id !== id);
+    setNotes(notesAfterDeletion);
   };
 
   return (
