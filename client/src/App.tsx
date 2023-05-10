@@ -39,7 +39,7 @@ function App() {
       id: uuidv4(),
       text: newNote,
     };
-    await axios.put(`${apiBaseUrl}/notes`, {});
+    await axios.post(`${apiBaseUrl}/notes`, noteToPost);
     setNotes([...notes, noteToPost]);
     setNewNote('');
   };
