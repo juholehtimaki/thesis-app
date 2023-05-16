@@ -60,7 +60,11 @@ function App() {
             value={newNote}
             onChange={(e) => setNewNote(e.target.value)}
           />
-          <Button type="submit" variant="contained">
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={newNote.length === 0}
+          >
             Submit
           </Button>
         </form>

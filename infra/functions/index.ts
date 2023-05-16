@@ -8,8 +8,8 @@ const TABLE = process.env.dynamoTableName as string;
 
 const headers = {
   "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-  "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Credentials": true,
 };
 
 interface Note {
@@ -17,10 +17,7 @@ interface Note {
   text: string;
 }
 
-export const handler = async (
-  event: APIGatewayProxyEvent,
-  context: Context
-) => {
+export const handler = async (event: APIGatewayProxyEvent, _: Context) => {
   const path = event.resource ?? "";
   const httpMethod = event.httpMethod ?? "";
   const route = httpMethod.concat(path);

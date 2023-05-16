@@ -29,6 +29,26 @@ export class InfraStack extends Stack {
       domainName: variables.DOMAIN,
     });
 
+    const siteCertificate = new acm.DnsValidatedCertificate(
+      this,
+      "SiteCertificate",
+      {
+        domainName: variables.FRONTEND_DOMAIN,
+        hostedZone: zone,
+        region: "us-east-1", //cloudfront cert has to be located in us-east-1
+      }
+    );
+
+    const apiCertificate = new acm.DnsValidatedCertificate(
+      this,
+      "ApiCertificate",
+      {
+        domainName: variables.BACKEND_DOMAIN,
+        hostedZone: zone,
+        region: "eu-west-1",
+      }
+    );
+
     const siteBucket = new s3.Bucket(this, "SiteBucket", {
       bucketName: variables.FRONTEND_DOMAIN,
       removalPolicy: RemovalPolicy.DESTROY,
@@ -42,16 +62,6 @@ export class InfraStack extends Stack {
         restrictPublicBuckets: false,
       },
     });
-
-    const siteCertificate = new acm.DnsValidatedCertificate(
-      this,
-      "SiteCertificate",
-      {
-        domainName: variables.FRONTEND_DOMAIN,
-        hostedZone: zone,
-        region: "us-east-1", //cloudfront cert has to be located in us-east-1
-      }
-    );
 
     const siteDistribution = new cloudfront.CloudFrontWebDistribution(
       this,
@@ -119,16 +129,6 @@ export class InfraStack extends Stack {
     );
 
     dynamoTable.grantReadWriteData(apiLambda);
-
-    const apiCertificate = new acm.DnsValidatedCertificate(
-      this,
-      "ApiCertificate",
-      {
-        domainName: variables.BACKEND_DOMAIN,
-        hostedZone: zone,
-        region: "eu-west-1",
-      }
-    );
 
     const api = new apigateway.RestApi(this, `${variables.ENV_NAME}-api`, {
       description: `${variables.ENV_NAME}-api`,
