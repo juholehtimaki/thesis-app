@@ -52,6 +52,10 @@ jobs:
       - name: Run tests
         run: cd client && npm run test
 
+      # Build lambda
+      - name: Build lambda
+        run: cd infra/functions && npm install
+
       # Deploy project to AWS
       - name: Install infrastructure dependencies and deploy the project to AWS
         run: cd infra && npm ci && npx cdk deploy ProductionInfraStack --require-approval never
