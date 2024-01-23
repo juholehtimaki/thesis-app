@@ -53,6 +53,20 @@ export class InfraStack extends Stack {
       bucketName: variables.FRONTEND_DOMAIN,
       removalPolicy: RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html",
+<<<<<<< HEAD
+      autoDeleteObjects: true,
+      publicReadAccess: false,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+    });
+
+    const cloudFrontOAI = new cloudfront.OriginAccessIdentity(
+      this,
+      "CloudFrontOAI"
+    );
+
+    siteBucket.grantRead(cloudFrontOAI);
+
+=======
       publicReadAccess: true,
       autoDeleteObjects: true,
       blockPublicAccess: {
@@ -63,15 +77,16 @@ export class InfraStack extends Stack {
       },
     });
 
+>>>>>>> origin/main
     const siteDistribution = new cloudfront.CloudFrontWebDistribution(
       this,
-      `CloudfrontDistribution`,
+      `CloudFrontDistribution`,
       {
         originConfigs: [
           {
-            customOriginSource: {
-              domainName: siteBucket.bucketWebsiteDomainName,
-              originProtocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
+            s3OriginSource: {
+              s3BucketSource: siteBucket,
+              originAccessIdentity: cloudFrontOAI,
             },
             behaviors: [{ isDefaultBehavior: true }],
           },
