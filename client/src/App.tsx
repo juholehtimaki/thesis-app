@@ -26,28 +26,43 @@ function App() {
 
   useEffect(() => {
     const fetchInitialNotes = async () => {
-      const { data } = await axios.get(`${apiBaseUrl}/notes`);
-      setNotes(data.Items as NoteModel[]);
+      try {
+        const { data } = await axios.get(`${apiBaseUrl}/notes`);
+        setNotes(data.Items as NoteModel[]);
+      } catch (e: any) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+      }
     };
     fetchInitialNotes();
   }, []);
 
-  const createNote = async (e: SyntheticEvent) => {
-    e.preventDefault();
+  const createNote = async (event: SyntheticEvent) => {
+    event.preventDefault();
     if (newNote.length === 0) return;
     const noteToPost: NoteModel = {
       id: uuidv4(),
       text: newNote,
     };
-    await axios.post(`${apiBaseUrl}/notes`, noteToPost);
-    setNotes([...notes, noteToPost]);
-    setNewNote('');
+    try {
+      const post = await axios.post(`${apiBaseUrl}/notes`, noteToPost);
+      setNotes([...notes, post.data]);
+      setNewNote('');
+    } catch (e: any) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
   };
 
   const deleteNote = async (id: string) => {
-    await axios.delete(`${apiBaseUrl}/notes/${id}`);
-    const notesAfterDeletion = notes.filter((note) => note.id !== id);
-    setNotes(notesAfterDeletion);
+    try {
+      await axios.delete(`${apiBaseUrl}/notes/${id}`);
+      const notesAfterDeletion = notes.filter((note) => note.id !== id);
+      setNotes(notesAfterDeletion);
+    } catch (e: any) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
   };
 
   return (

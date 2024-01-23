@@ -34,7 +34,10 @@ export const handler = async (event: APIGatewayProxyEvent, _: Context) => {
     case "DELETE/notes/{id}":
       return await deleteNote(event.pathParameters?.id);
     case "PUT/notes/{id}":
-      return await updateNote(JSON.parse(payload) as Note);
+      return await updateNote(
+        JSON.parse(payload) as Note,
+        event.pathParameters?.id
+      );
     default:
       console.error("Invalid route.");
       return {
@@ -90,18 +93,23 @@ const getSingleNote = async (id?: string) => {
 const postNote = async (noteToPost: Note) => {
   try {
     const note = await noteDB
-      .put({
+      .update({
         TableName: TABLE,
-        Item: {
-          id: noteToPost.id,
-          text: noteToPost.text,
+        Key: { id: noteToPost.id },
+        UpdateExpression: "set #text = :newText",
+        ExpressionAttributeNames: {
+          "#text": "text",
         },
+        ExpressionAttributeValues: {
+          ":newText": noteToPost.text,
+        },
+        ReturnValues: "ALL_NEW",
       })
       .promise();
     console.log("POST note request succeeded.", { note });
     return {
       headers,
-      body: JSON.stringify(note),
+      body: JSON.stringify(note?.Attributes),
       statusCode: 200,
     };
   } catch (e) {
@@ -137,22 +145,26 @@ const deleteNote = async (id?: string) => {
   }
 };
 
-export const updateNote = async (noteToUpdate: Note) => {
+export const updateNote = async (noteToUpdate: Note, id?: string) => {
   try {
     const note = await noteDB
       .update({
         TableName: TABLE,
-        Key: { id: noteToUpdate.id },
-        UpdateExpression: "set text = :newText",
+        Key: { id },
+        UpdateExpression: "set #text = :newText",
+        ExpressionAttributeNames: {
+          "#text": "text",
+        },
         ExpressionAttributeValues: {
           ":newText": noteToUpdate.text,
         },
+        ReturnValues: "ALL_NEW",
       })
       .promise();
     console.log("UPDATE note request succeeded.", { note });
     return {
       headers,
-      body: JSON.stringify(note),
+      body: JSON.stringify(note?.Attributes),
       statusCode: 200,
     };
   } catch (e) {
