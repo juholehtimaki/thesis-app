@@ -52,9 +52,9 @@ jobs:
       - name: Run tests
         run: cd client && npm run test
 
-      # Build lambda
-      - name: Build lambda
-        run: cd infra/functions && npm install
+      # Install lambda dependencies
+      - name: Install lambda dependencies
+        run: cd infra/resources/lambdas && npm install
 
       # Deploy project to AWS
       - name: Install infrastructure dependencies and deploy the project to AWS
