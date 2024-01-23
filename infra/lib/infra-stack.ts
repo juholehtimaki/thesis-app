@@ -117,11 +117,11 @@ export class InfraStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    const apiLambda = new lambda.NodejsFunction(
+    const getNotesLambda = new lambda.NodejsFunction(
       this,
-      `${variables.ENV_NAME}-lambda`,
+      `${variables.ENV_NAME}-get-notes-lambda`,
       {
-        entry: "functions/index.ts",
+        entry: "resources/lambdas/get-all-notes.ts",
         handler: "handler",
         environment: {
           dynamoTableName: dynamoTable.tableName,
@@ -131,7 +131,67 @@ export class InfraStack extends Stack {
       }
     );
 
-    dynamoTable.grantReadWriteData(apiLambda);
+    const getSingleNoteLambda = new lambda.NodejsFunction(
+      this,
+      `${variables.ENV_NAME}-get-single-note-lambda`,
+      {
+        entry: "resources/lambdas/get-single-note.ts",
+        handler: "handler",
+        environment: {
+          dynamoTableName: dynamoTable.tableName,
+        },
+        tracing: Tracing.ACTIVE,
+        runtime: Runtime.NODEJS_18_X,
+      }
+    );
+
+    const postNoteLambda = new lambda.NodejsFunction(
+      this,
+      `${variables.ENV_NAME}-post-note-lambda`,
+      {
+        entry: "resources/lambdas/post-note.ts",
+        handler: "handler",
+        environment: {
+          dynamoTableName: dynamoTable.tableName,
+        },
+        tracing: Tracing.ACTIVE,
+        runtime: Runtime.NODEJS_18_X,
+      }
+    );
+
+    const updateNoteLambda = new lambda.NodejsFunction(
+      this,
+      `${variables.ENV_NAME}-update-note-lambda`,
+      {
+        entry: "resources/lambdas/update-note.ts",
+        handler: "handler",
+        environment: {
+          dynamoTableName: dynamoTable.tableName,
+        },
+        tracing: Tracing.ACTIVE,
+        runtime: Runtime.NODEJS_18_X,
+      }
+    );
+
+    const deleteNoteLambda = new lambda.NodejsFunction(
+      this,
+      `${variables.ENV_NAME}-delete-note-lambda`,
+      {
+        entry: "resources/lambdas/delete-note.ts",
+        handler: "handler",
+        environment: {
+          dynamoTableName: dynamoTable.tableName,
+        },
+        tracing: Tracing.ACTIVE,
+        runtime: Runtime.NODEJS_18_X,
+      }
+    );
+
+    dynamoTable.grantReadData(getNotesLambda);
+    dynamoTable.grantReadData(getSingleNoteLambda);
+    dynamoTable.grantReadWriteData(postNoteLambda);
+    dynamoTable.grantReadWriteData(updateNoteLambda);
+    dynamoTable.grantReadWriteData(deleteNoteLambda);
 
     const api = new apigateway.RestApi(this, `${variables.ENV_NAME}-api`, {
       description: `${variables.ENV_NAME}-api`,
@@ -166,11 +226,17 @@ export class InfraStack extends Stack {
     const notes = api.root.addResource("notes");
     const note = notes.addResource("{id}");
 
-    notes.addMethod("GET", new apigateway.LambdaIntegration(apiLambda));
-    notes.addMethod("POST", new apigateway.LambdaIntegration(apiLambda));
-    note.addMethod("GET", new apigateway.LambdaIntegration(apiLambda));
-    note.addMethod("PUT", new apigateway.LambdaIntegration(apiLambda));
-    note.addMethod("DELETE", new apigateway.LambdaIntegration(apiLambda));
+    notes.addMethod("GET", new apigateway.LambdaIntegration(getNotesLambda));
+    notes.addMethod("POST", new apigateway.LambdaIntegration(postNoteLambda));
+    note.addMethod(
+      "GET",
+      new apigateway.LambdaIntegration(getSingleNoteLambda)
+    );
+    note.addMethod("PUT", new apigateway.LambdaIntegration(updateNoteLambda));
+    note.addMethod(
+      "DELETE",
+      new apigateway.LambdaIntegration(deleteNoteLambda)
+    );
 
     new route53.ARecord(this, "BackendRecord", {
       zone: zone,
