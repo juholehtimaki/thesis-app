@@ -128,6 +128,10 @@ export class InfraStack extends Stack {
         },
         tracing: Tracing.ACTIVE,
         runtime: Runtime.NODEJS_18_X,
+        bundling: {
+          // Mark 'aws-sdk' as external to exclude it from the bundle
+          externalModules: ["aws-sdk"],
+        },
       }
     );
 
