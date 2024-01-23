@@ -54,7 +54,7 @@ jobs:
 
       # Build lambda
       - name: Build lambda
-        run: cd infra/functions && npm install
+        run: cd infra/resources/lambdas && npm install
 
       # Deploy project to AWS
       - name: Install infrastructure dependencies and deploy the project to AWS
