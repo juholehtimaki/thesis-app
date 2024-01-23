@@ -12,7 +12,7 @@ import {
   aws_lambda_nodejs as lambda,
   aws_apigateway as apigateway,
 } from "aws-cdk-lib";
-import { Tracing } from "aws-cdk-lib/aws-lambda";
+import { Runtime, Tracing } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import { vars } from "./env";
 
@@ -127,6 +127,7 @@ export class InfraStack extends Stack {
           dynamoTableName: dynamoTable.tableName,
         },
         tracing: Tracing.ACTIVE,
+        runtime: Runtime.NODEJS_18_X,
       }
     );
 
