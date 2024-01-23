@@ -28,7 +28,7 @@ function App() {
     const fetchInitialNotes = async () => {
       try {
         const { data } = await axios.get(`${apiBaseUrl}/notes`);
-        setNotes(data.Items as NoteModel[]);
+        setNotes(data as NoteModel[]);
       } catch (e: any) {
         // eslint-disable-next-line no-console
         console.error(e);
