@@ -56,13 +56,13 @@ jobs:
       - name: Install CDK dependencies
         run: cd infra && npm ci
 
+      # Install Lambda dependencies
+      - name: Install lambda dependencies
+        run: cd infra/resources/lambdas && npm ci
+
       # Run eslint for infra
       - name: Run eslint
         run: cd infra && npm run lint
-
-      # Install lambda dependencies
-      - name: Install lambda dependencies
-        run: cd infra/resources/lambdas && npm ci
 
       # Deploy project to AWS
       - name: Deploy project to AWS
