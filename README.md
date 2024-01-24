@@ -1,14 +1,68 @@
 # Fullstack serverless AWS project for thesis
 
-This project establishes two separate serverless AWS infrastructures for production and staging environments. The CI/CD pipeline is implemented through GitHub Actions. Changes in the main branch are deployed to the production environment, while changes to the dev branch are deployed to the staging environment.
+This project sets up distinct serverless AWS infrastructures for both production and staging environments. The continuous integration and continuous deployment (CI/CD) pipeline is orchestrated through GitHub Actions, automating the deployment process based on branch updates.
 
-## Technologies:
+## Technologies and Services
 
-- Frontend with React & TypeScript
-- AWS
-  - Infrastructure with CDK & TypeScript
-  - S3 & CloudFront & Route53 & Certificate Manager for frontend
-  - Api Gateway, Lambda, DynamoDB for backend
+### Programming Language:
+
+- **TypeScript:**
+  - Utilized for writing both React components and AWS CDK infrastructure stack, ensuring a consistent and type-safe development environment.
+
+### Frontend Framework:
+
+- **React:**
+  - Employed to craft the dynamic and responsive web application, providing a modern and efficient user experience.
+
+### Infrastructure as Code (IaC):
+
+- **AWS CDK:**
+  - Adopted for provisioning and managing the required AWS resources, facilitating the deployment and scaling of the application.
+
+### Cloud Services:
+
+- **Amazon S3 (Simple Storage Service):**
+
+  - Hosted static files for the React application in a serverless fashion, optimizing content delivery.
+
+- **Amazon CloudFront (Content Delivery Network - CDN):**
+
+  - Implemented for the global distribution of the S3-hosted web application, enhancing performance and reducing latency.
+
+- **Amazon API Gateway:**
+
+  - Orchestrated the creation of a serverless CRUD API, forwarding HTTPS requests to the corresponding AWS Lambdas.
+
+- **AWS Lambda:**
+
+  - Executed serverless functions to process incoming requests efficiently and securely.
+
+- **Amazon DynamoDB:**
+  - Leveraged as a serverless and scalable database to store and retrieve application data seamlessly.
+
+### Networking and Security:
+
+- **Amazon Route 53:**
+
+  - Utilized as a DNS service to manage domain names and direct traffic efficiently.
+
+- **AWS Certificate Manager (ACM):**
+  - Managed SSL/TLS certificates, ensuring secure communication with end-users.
+
+### Monitoring and Debugging:
+
+- **Amazon CloudWatch & AWS X-Ray:**
+  - Deployed for logging and debugging purposes, offering insights into application performance and request tracing.
+
+### Code Quality and Maintenance:
+
+- **ESLint & Prettier:**
+  - Integrated into the development workflow to enforce coding standards, enhancing code quality and maintainability.
+
+### Continuous Integration/Continuous Deployment (CI/CD):
+
+- **GitHub Actions:**
+  - Implemented automated pipelines for both development and main branches, streamlining deployments to production or staging environments.
 
 ## Architecture
 
