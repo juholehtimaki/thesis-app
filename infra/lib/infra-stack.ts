@@ -11,48 +11,48 @@ import {
   aws_dynamodb as dynamodb,
   aws_lambda_nodejs as lambda,
   aws_apigateway as apigateway,
-} from "aws-cdk-lib";
-import { Runtime, Tracing } from "aws-cdk-lib/aws-lambda";
-import { Construct } from "constructs";
-import { vars } from "./env";
+} from 'aws-cdk-lib';
+import { Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
+import { Construct } from 'constructs';
+import { vars } from './env';
 
 export class InfraStack extends Stack {
   constructor(
     scope: Construct,
     id: string,
     variables: vars,
-    props?: StackProps
+    props?: StackProps,
   ) {
     super(scope, id, props);
 
-    const zone = route53.HostedZone.fromLookup(this, "Zone", {
+    const zone = route53.HostedZone.fromLookup(this, 'Zone', {
       domainName: variables.DOMAIN,
     });
 
     const siteCertificate = new acm.DnsValidatedCertificate(
       this,
-      "SiteCertificate",
+      'SiteCertificate',
       {
         domainName: variables.FRONTEND_DOMAIN,
         hostedZone: zone,
-        region: "us-east-1", //cloudfront cert has to be located in us-east-1
-      }
+        region: 'us-east-1', //cloudfront cert has to be located in us-east-1
+      },
     );
 
     const apiCertificate = new acm.DnsValidatedCertificate(
       this,
-      "ApiCertificate",
+      'ApiCertificate',
       {
         domainName: variables.BACKEND_DOMAIN,
         hostedZone: zone,
-        region: "eu-west-1",
-      }
+        region: 'eu-west-1',
+      },
     );
 
-    const siteBucket = new s3.Bucket(this, "SiteBucket", {
+    const siteBucket = new s3.Bucket(this, 'SiteBucket', {
       bucketName: variables.FRONTEND_DOMAIN,
       removalPolicy: RemovalPolicy.DESTROY,
-      websiteIndexDocument: "index.html",
+      websiteIndexDocument: 'index.html',
       autoDeleteObjects: true,
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -60,7 +60,7 @@ export class InfraStack extends Stack {
 
     const cloudFrontOAI = new cloudfront.OriginAccessIdentity(
       this,
-      "CloudFrontOAI"
+      'CloudFrontOAI',
     );
 
     siteBucket.grantRead(cloudFrontOAI);
@@ -83,33 +83,33 @@ export class InfraStack extends Stack {
           aliases: [variables.FRONTEND_DOMAIN],
           props: {
             acmCertificateArn: siteCertificate.certificateArn,
-            sslSupportMethod: "sni-only",
-            minimumProtocolVersion: "TLSv1.2_2021",
+            sslSupportMethod: 'sni-only',
+            minimumProtocolVersion: 'TLSv1.2_2021',
           },
         },
-      }
+      },
     );
 
-    new route53.ARecord(this, "SiteRecord", {
+    new route53.ARecord(this, 'SiteRecord', {
       recordName: variables.FRONTEND_DOMAIN,
       target: route53.RecordTarget.fromAlias(
-        new targets.CloudFrontTarget(siteDistribution)
+        new targets.CloudFrontTarget(siteDistribution),
       ),
       zone,
     });
 
-    new s3deploy.BucketDeployment(this, "DeploymentToSiteBucket", {
-      sources: [s3deploy.Source.asset("../client/build")],
+    new s3deploy.BucketDeployment(this, 'DeploymentToSiteBucket', {
+      sources: [s3deploy.Source.asset('../client/build')],
       destinationBucket: siteBucket,
       distribution: siteDistribution,
-      distributionPaths: ["/*"],
+      distributionPaths: ['/*'],
       retainOnDelete: false,
     });
 
-    const dynamoTable = new dynamodb.Table(this, "DynamoDbTable", {
+    const dynamoTable = new dynamodb.Table(this, 'DynamoDbTable', {
       tableName: `${variables.ENV_NAME}-table`,
       partitionKey: {
-        name: "id",
+        name: 'id',
         type: dynamodb.AttributeType.STRING,
       },
       readCapacity: 1,
@@ -121,70 +121,70 @@ export class InfraStack extends Stack {
       this,
       `${variables.ENV_NAME}-get-notes-lambda`,
       {
-        entry: "resources/lambdas/get-all-notes.ts",
-        handler: "handler",
+        entry: 'resources/lambdas/get-all-notes.ts',
+        handler: 'handler',
         environment: {
           dynamoTableName: dynamoTable.tableName,
         },
         tracing: Tracing.ACTIVE,
         runtime: Runtime.NODEJS_18_X,
-      }
+      },
     );
 
     const getSingleNoteLambda = new lambda.NodejsFunction(
       this,
       `${variables.ENV_NAME}-get-single-note-lambda`,
       {
-        entry: "resources/lambdas/get-single-note.ts",
-        handler: "handler",
+        entry: 'resources/lambdas/get-single-note.ts',
+        handler: 'handler',
         environment: {
           dynamoTableName: dynamoTable.tableName,
         },
         tracing: Tracing.ACTIVE,
         runtime: Runtime.NODEJS_18_X,
-      }
+      },
     );
 
     const postNoteLambda = new lambda.NodejsFunction(
       this,
       `${variables.ENV_NAME}-post-note-lambda`,
       {
-        entry: "resources/lambdas/post-note.ts",
-        handler: "handler",
+        entry: 'resources/lambdas/post-note.ts',
+        handler: 'handler',
         environment: {
           dynamoTableName: dynamoTable.tableName,
         },
         tracing: Tracing.ACTIVE,
         runtime: Runtime.NODEJS_18_X,
-      }
+      },
     );
 
     const updateNoteLambda = new lambda.NodejsFunction(
       this,
       `${variables.ENV_NAME}-update-note-lambda`,
       {
-        entry: "resources/lambdas/update-note.ts",
-        handler: "handler",
+        entry: 'resources/lambdas/update-note.ts',
+        handler: 'handler',
         environment: {
           dynamoTableName: dynamoTable.tableName,
         },
         tracing: Tracing.ACTIVE,
         runtime: Runtime.NODEJS_18_X,
-      }
+      },
     );
 
     const deleteNoteLambda = new lambda.NodejsFunction(
       this,
       `${variables.ENV_NAME}-delete-note-lambda`,
       {
-        entry: "resources/lambdas/delete-note.ts",
-        handler: "handler",
+        entry: 'resources/lambdas/delete-note.ts',
+        handler: 'handler',
         environment: {
           dynamoTableName: dynamoTable.tableName,
         },
         tracing: Tracing.ACTIVE,
         runtime: Runtime.NODEJS_18_X,
-      }
+      },
     );
 
     dynamoTable.grantReadData(getNotesLambda);
@@ -208,37 +208,37 @@ export class InfraStack extends Stack {
       },
       defaultCorsPreflightOptions: {
         allowHeaders: [
-          "Content-Type",
-          "X-Amz-Date",
-          "Authorization",
-          "X-Api-Key",
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
         ],
-        allowMethods: ["GET", "POST", "PUT", "DELETE"],
+        allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
         allowCredentials: true,
         allowOrigins: [
           // FOR DEV PURPOSES
-          "http://localhost:3000",
+          'http://localhost:3000',
           `https://${variables.FRONTEND_DOMAIN}`,
         ],
       },
     });
 
-    const notes = api.root.addResource("notes");
-    const note = notes.addResource("{id}");
+    const notes = api.root.addResource('notes');
+    const note = notes.addResource('{id}');
 
-    notes.addMethod("GET", new apigateway.LambdaIntegration(getNotesLambda));
-    notes.addMethod("POST", new apigateway.LambdaIntegration(postNoteLambda));
+    notes.addMethod('GET', new apigateway.LambdaIntegration(getNotesLambda));
+    notes.addMethod('POST', new apigateway.LambdaIntegration(postNoteLambda));
     note.addMethod(
-      "GET",
-      new apigateway.LambdaIntegration(getSingleNoteLambda)
+      'GET',
+      new apigateway.LambdaIntegration(getSingleNoteLambda),
     );
-    note.addMethod("PUT", new apigateway.LambdaIntegration(updateNoteLambda));
+    note.addMethod('PUT', new apigateway.LambdaIntegration(updateNoteLambda));
     note.addMethod(
-      "DELETE",
-      new apigateway.LambdaIntegration(deleteNoteLambda)
+      'DELETE',
+      new apigateway.LambdaIntegration(deleteNoteLambda),
     );
 
-    new route53.ARecord(this, "BackendRecord", {
+    new route53.ARecord(this, 'BackendRecord', {
       zone: zone,
       recordName: variables.BACKEND_DOMAIN,
       target: route53.RecordTarget.fromAlias(new targets.ApiGateway(api)),

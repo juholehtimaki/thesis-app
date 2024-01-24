@@ -1,7 +1,7 @@
-import { APIGatewayProxyEvent, Context } from "aws-lambda";
-import { captureAWS } from "aws-xray-sdk-core";
-import * as aws from "aws-sdk";
-import { Note, headers } from "./helpers";
+import { APIGatewayProxyEvent, Context } from 'aws-lambda';
+import { captureAWS } from 'aws-xray-sdk-core';
+import * as aws from 'aws-sdk';
+import { Note, headers } from './helpers';
 
 const AWS = captureAWS(aws);
 const noteDB = new AWS.DynamoDB.DocumentClient();
@@ -16,24 +16,24 @@ export const handler = async (event: APIGatewayProxyEvent, __: Context) => {
       .update({
         TableName: TABLE,
         Key: { id },
-        UpdateExpression: "set #text = :newText",
+        UpdateExpression: 'set #text = :newText',
         ExpressionAttributeNames: {
-          "#text": "text",
+          '#text': 'text',
         },
         ExpressionAttributeValues: {
-          ":newText": note.text,
+          ':newText': note.text,
         },
-        ReturnValues: "ALL_NEW",
+        ReturnValues: 'ALL_NEW',
       })
       .promise();
-    console.log("UPDATE note request succeeded.", { result });
+    console.log('UPDATE note request succeeded.', { result });
     return {
       headers,
       body: JSON.stringify(result?.Attributes),
       statusCode: 200,
     };
   } catch (e) {
-    console.error("UPDATE note request failed with an error.", { e });
+    console.error('UPDATE note request failed with an error.', { e });
     return {
       headers,
       statusCode: 500,
