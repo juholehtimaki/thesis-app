@@ -40,7 +40,7 @@ jobs:
       - name: Install client dependencies
         run: cd client && npm ci
 
-      # Run eslint
+      # Run eslint for client
       - name: Run eslint
         run: cd client && npm run lint
 
@@ -52,10 +52,18 @@ jobs:
       - name: Run tests
         run: cd client && npm run test
 
-      # Install lambda dependencies
+      # Install CDK dependencies
+      - name: Install CDK dependencies
+        run: cd infra && npm ci
+
+      # Install Lambda dependencies
       - name: Install lambda dependencies
-        run: cd infra/resources/lambdas && npm install
+        run: cd infra/resources/lambdas && npm ci
+
+      # Run eslint for infra
+      - name: Run eslint
+        run: cd infra && npm run lint
 
       # Deploy project to AWS
-      - name: Install infrastructure dependencies and deploy the project to AWS
-        run: cd infra && npm ci && npx cdk deploy ProductionInfraStack --require-approval never
+      - name: Deploy project to AWS
+        run: cd infra && npx cdk deploy ProductionInfraStack --require-approval never
