@@ -1,6 +1,6 @@
-const DOMAIN = "juholehtimaki.com";
+const DOMAIN = 'juholehtimaki.com';
 
-type deploymentEnv = "staging" | "production";
+type deploymentEnv = 'staging' | 'production';
 
 export interface vars {
   DOMAIN: string;
@@ -11,14 +11,14 @@ export interface vars {
 
 export const stagingVariables: vars = {
   DOMAIN,
-  ENV_NAME: "staging",
+  ENV_NAME: 'staging',
   BACKEND_DOMAIN: `stagingapi.${DOMAIN}`,
   FRONTEND_DOMAIN: `stagingapp.${DOMAIN}`,
 };
 
 export const productionVariables: vars = {
   DOMAIN,
-  ENV_NAME: "production",
+  ENV_NAME: 'production',
   BACKEND_DOMAIN: `productionapi.${DOMAIN}`,
   FRONTEND_DOMAIN: `productionapp.${DOMAIN}`,
 };

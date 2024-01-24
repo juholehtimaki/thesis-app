@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import * as cdk from "aws-cdk-lib";
-import { InfraStack } from "../lib/infra-stack";
-import { productionVariables, stagingVariables } from "../lib/env";
-import "dotenv/config";
+import * as cdk from 'aws-cdk-lib';
+import { InfraStack } from '../lib/infra-stack';
+import { productionVariables, stagingVariables } from '../lib/env';
+import 'dotenv/config';
 
 const app = new cdk.App();
 
@@ -11,10 +11,10 @@ const env = {
   account: process.env.ACCOUNT_ID,
 };
 
-new InfraStack(app, "StagingInfraStack", stagingVariables, {
+new InfraStack(app, 'StagingInfraStack', stagingVariables, {
   env,
 });
 
-new InfraStack(app, "ProductionInfraStack", productionVariables, {
+new InfraStack(app, 'ProductionInfraStack', productionVariables, {
   env,
 });
