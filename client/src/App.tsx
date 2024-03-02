@@ -38,6 +38,7 @@ function App() {
         const { data } = await axios.get(`${apiBaseUrl}/notes`);
         setNotes(data as NoteModel[]);
       } catch (e: any) {
+        // eslint-disable-next-line no-console
         console.error(e);
       }
     };
@@ -56,6 +57,7 @@ function App() {
       setNotes([...notes, post.data]);
       setNewNote('');
     } catch (e: any) {
+      // eslint-disable-next-line no-console
       console.error(e);
     }
   };
@@ -66,6 +68,7 @@ function App() {
       const notesAfterDeletion = notes.filter((note) => note.id !== id);
       setNotes(notesAfterDeletion);
     } catch (e: any) {
+      // eslint-disable-next-line no-console
       console.error(e);
     }
   };
@@ -88,6 +91,7 @@ function App() {
         setEditNoteId(null);
         setEditedNoteText('');
       } catch (e: any) {
+        // eslint-disable-next-line no-console
         console.error(e);
       }
     }
