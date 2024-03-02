@@ -4,13 +4,19 @@ import axios from 'axios';
 import List from '@mui/material/List';
 import {
   Button,
+  Card,
+  CardActions,
+  CardContent,
   IconButton,
   Input,
   ListItem,
   ListItemIcon,
   ListItemText,
+  Modal,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 import { v4 as uuidv4 } from 'uuid';
 
 const apiBaseUrl = process.env.REACT_APP_API;
@@ -23,6 +29,8 @@ interface NoteModel {
 function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [newNote, setNewNote] = useState('');
+  const [editNoteId, setEditNoteId] = useState<string | null>(null);
+  const [editedNoteText, setEditedNoteText] = useState('');
 
   useEffect(() => {
     const fetchInitialNotes = async () => {
@@ -30,7 +38,6 @@ function App() {
         const { data } = await axios.get(`${apiBaseUrl}/notes`);
         setNotes(data as NoteModel[]);
       } catch (e: any) {
-        // eslint-disable-next-line no-console
         console.error(e);
       }
     };
@@ -49,7 +56,6 @@ function App() {
       setNotes([...notes, post.data]);
       setNewNote('');
     } catch (e: any) {
-      // eslint-disable-next-line no-console
       console.error(e);
     }
   };
@@ -60,9 +66,36 @@ function App() {
       const notesAfterDeletion = notes.filter((note) => note.id !== id);
       setNotes(notesAfterDeletion);
     } catch (e: any) {
-      // eslint-disable-next-line no-console
       console.error(e);
     }
+  };
+
+  const openEditModal = (id: string, text: string) => {
+    setEditNoteId(id);
+    setEditedNoteText(text);
+  };
+
+  const updateNote = async () => {
+    if (editNoteId && editedNoteText.length > 0) {
+      try {
+        await axios.put(`${apiBaseUrl}/notes/${editNoteId}`, {
+          text: editedNoteText,
+        });
+        const updatedNotes = notes.map((note) =>
+          note.id === editNoteId ? { ...note, text: editedNoteText } : note,
+        );
+        setNotes(updatedNotes);
+        setEditNoteId(null);
+        setEditedNoteText('');
+      } catch (e: any) {
+        console.error(e);
+      }
+    }
+  };
+
+  const handleCloseModal = () => {
+    setEditNoteId(null);
+    setEditedNoteText('');
   };
 
   return (
@@ -89,6 +122,9 @@ function App() {
             <ListItem key={note.id}>
               <ListItemText primary={note.text} />
               <ListItemIcon>
+                <IconButton onClick={() => openEditModal(note.id, note.text)}>
+                  <EditIcon />
+                </IconButton>
                 <IconButton onClick={() => deleteNote(note.id)}>
                   <DeleteIcon />
                 </IconButton>
@@ -96,6 +132,34 @@ function App() {
             </ListItem>
           ))}
         </List>
+        <Modal
+          open={!!editNoteId}
+          onClose={handleCloseModal}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Card>
+            <CardContent>
+              <h2>Edit Note</h2>
+              <Input
+                type="text"
+                value={editedNoteText}
+                onChange={(e) => setEditedNoteText(e.target.value)}
+              />
+            </CardContent>
+            <CardActions style={{ justifyContent: 'center' }}>
+              <Button variant="contained" onClick={updateNote}>
+                Update
+              </Button>
+              <IconButton onClick={handleCloseModal}>
+                <CloseIcon />
+              </IconButton>
+            </CardActions>
+          </Card>
+        </Modal>
       </header>
     </div>
   );
