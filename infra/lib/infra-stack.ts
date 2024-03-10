@@ -11,6 +11,7 @@ import {
   aws_dynamodb as dynamodb,
   aws_lambda_nodejs as lambda,
   aws_apigateway as apigateway,
+  aws_cognito as cognito,
 } from 'aws-cdk-lib';
 import { Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
@@ -107,9 +108,13 @@ export class InfraStack extends Stack {
     });
 
     const dynamoTable = new dynamodb.Table(this, 'DynamoDbTable', {
-      tableName: `${variables.ENV_NAME}-table`,
+      tableName: `${variables.ENV_NAME}-note-table`,
       partitionKey: {
         name: 'id',
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'userId',
         type: dynamodb.AttributeType.STRING,
       },
       readCapacity: 1,
@@ -223,19 +228,87 @@ export class InfraStack extends Stack {
       },
     });
 
+    const userPool = new cognito.UserPool(this, 'UserPool', {
+      selfSignUpEnabled: true,
+      autoVerify: { email: true },
+      signInAliases: { email: true },
+      userPoolName: `${variables.ENV_NAME}-user-pool`,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+
+    const domainOptions = {
+      cognitoDomain: {
+        domainPrefix: `${variables.ENV_NAME}-user-pool-domain`,
+      },
+    };
+
+    new cognito.UserPoolDomain(this, 'UserPoolDomain', {
+      userPool,
+      ...domainOptions,
+    });
+
+    new cognito.UserPoolClient(this, 'UserPoolClient', {
+      userPool,
+      userPoolClientName: `${variables.ENV_NAME}-user-pool-cient`,
+      generateSecret: false, // Do not generate client secret for web clients
+      authFlows: {
+        userPassword: true,
+        userSrp: true,
+        custom: true,
+      },
+      oAuth: {
+        flows: {
+          implicitCodeGrant: true,
+        },
+        scopes: [
+          cognito.OAuthScope.EMAIL,
+          cognito.OAuthScope.OPENID,
+          cognito.OAuthScope.PROFILE,
+        ],
+        callbackUrls: [
+          'http://localhost:3000',
+          `https://${variables.FRONTEND_DOMAIN}`,
+        ], // Example callback URL for your web app
+        logoutUrls: [
+          'http://localhost:3000',
+          `https://${variables.FRONTEND_DOMAIN}`,
+        ], // Example logout URL for your web app
+      },
+    });
+
+    const authorizer = new apigateway.CognitoUserPoolsAuthorizer(
+      this,
+      'CognitoAuthorizer',
+      {
+        cognitoUserPools: [userPool],
+      },
+    );
+
     const notes = api.root.addResource('notes');
     const note = notes.addResource('{id}');
 
-    notes.addMethod('GET', new apigateway.LambdaIntegration(getNotesLambda));
-    notes.addMethod('POST', new apigateway.LambdaIntegration(postNoteLambda));
+    notes.addMethod('GET', new apigateway.LambdaIntegration(getNotesLambda), {
+      authorizer,
+    });
+    notes.addMethod('POST', new apigateway.LambdaIntegration(postNoteLambda), {
+      authorizer,
+    });
     note.addMethod(
       'GET',
       new apigateway.LambdaIntegration(getSingleNoteLambda),
+      {
+        authorizer,
+      },
     );
-    note.addMethod('PUT', new apigateway.LambdaIntegration(updateNoteLambda));
+    note.addMethod('PUT', new apigateway.LambdaIntegration(updateNoteLambda), {
+      authorizer,
+    });
     note.addMethod(
       'DELETE',
       new apigateway.LambdaIntegration(deleteNoteLambda),
+      {
+        authorizer,
+      },
     );
 
     new route53.ARecord(this, 'BackendRecord', {

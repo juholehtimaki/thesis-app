@@ -7,9 +7,19 @@ const AWS = captureAWS(aws);
 const noteDB = new AWS.DynamoDB.DocumentClient();
 const TABLE = process.env.dynamoTableName as string;
 
-export const handler = async (_: APIGatewayProxyEvent, __: Context) => {
+export const handler = async (event: APIGatewayProxyEvent, __: Context) => {
+  const userId = event.requestContext.authorizer?.claims.sub;
+
   try {
-    const result = await noteDB.scan({ TableName: TABLE }).promise();
+    const result = await noteDB
+      .scan({
+        TableName: TABLE,
+        FilterExpression: 'userId = :userId',
+        ExpressionAttributeValues: {
+          ':userId': userId,
+        },
+      })
+      .promise();
     console.log('GET notes request succeeded.', { notes: result });
     return {
       headers,

@@ -9,12 +9,15 @@ const TABLE = process.env.dynamoTableName as string;
 
 export const handler = async (event: APIGatewayProxyEvent, __: Context) => {
   const id = event.pathParameters?.id;
+  const userId = event.requestContext.authorizer?.claims.sub;
+
   try {
     await noteDB
       .delete({
         TableName: TABLE,
         Key: {
           id,
+          userId,
         },
       })
       .promise();

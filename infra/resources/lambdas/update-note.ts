@@ -11,11 +11,13 @@ export const handler = async (event: APIGatewayProxyEvent, __: Context) => {
   const id = event.pathParameters?.id;
   const payload = event.body as string;
   const note = JSON.parse(payload) as Note;
+  const userId = event.requestContext.authorizer?.claims.sub;
+
   try {
     const result = await noteDB
       .update({
         TableName: TABLE,
-        Key: { id },
+        Key: { id, userId },
         UpdateExpression: 'set #text = :newText',
         ExpressionAttributeNames: {
           '#text': 'text',
