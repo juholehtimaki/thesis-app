@@ -40,6 +40,11 @@ This project sets up distinct serverless AWS infrastructures for both production
 - **Amazon DynamoDB:**
   - Leveraged as a serverless and scalable database to store and retrieve application data seamlessly.
 
+### User Authentication and Authorization:
+
+- **Amazon Cognito:**
+  - Integrated for user authentication and authorization, ensuring secure access to API endpoints through API Gateway.
+
 ### Networking and Security:
 
 - **Amazon Route 53:**
@@ -68,7 +73,7 @@ This project sets up distinct serverless AWS infrastructures for both production
 
 The project employs a serverless architecture, leveraging AWS services for optimal functionality.
 
-Static files from the React application are stored in Amazon S3 and served through CloudFront, functioning as a Content Delivery Network (CDN). API Gateway serves as the REST API, directing requests to Lambda, which in turn, makes modifications to DynamoDB. Certificate Manager is utilized for the generation of necessary certificates. Route 53 is employed for DNS management. CloudWatch and X-Ray serve logging and debugging purposes, ensuring effective monitoring and troubleshooting capabilities.
+Static files from the React application are stored in Amazon S3 and served through CloudFront, functioning as a Content Delivery Network (CDN). API Gateway serves as the REST API, directing requests to Lambda, which in turn, makes modifications to DynamoDB. Amazon Cognito handles user authentication and authorization. Certificate Manager is utilized for the generation of necessary certificates. Route 53 is employed for DNS management. CloudWatch and X-Ray serve logging and debugging purposes, ensuring effective monitoring and troubleshooting capabilities.
 
 ![Alt Text](documentation/images/aws_architecture.png)
 

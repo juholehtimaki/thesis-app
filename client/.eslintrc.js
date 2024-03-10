@@ -22,6 +22,7 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier', 'jest'],
   rules: {
+    'import/prefer-default-export': 'off',
     'react/jsx-filename-extension': ['warn', { extensions: ['.tsx', '.ts'] }],
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'import/extensions': [

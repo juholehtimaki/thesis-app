@@ -10,11 +10,13 @@ const TABLE = process.env.dynamoTableName as string;
 export const handler = async (event: APIGatewayProxyEvent, __: Context) => {
   const payload = event.body as string;
   const note = JSON.parse(payload) as Note;
+  const userId = event.requestContext.authorizer?.claims.sub;
+
   try {
     const result = await noteDB
       .update({
         TableName: TABLE,
-        Key: { id: note.id },
+        Key: { id: note.id, userId },
         UpdateExpression: 'set #text = :newText',
         ExpressionAttributeNames: {
           '#text': 'text',
@@ -25,6 +27,7 @@ export const handler = async (event: APIGatewayProxyEvent, __: Context) => {
         ReturnValues: 'ALL_NEW',
       })
       .promise();
+
     console.log('POST note request succeeded.', { note });
     return {
       headers,
