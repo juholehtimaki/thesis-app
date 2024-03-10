@@ -26,8 +26,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "REACT_APP_API='https://stagingapi.juholehtimaki.com' REACT_APP_USER_POOL_CLIENT_ID='4guludrvbkn4csjgvddumern5d' REACT_APP_USER_POOL_ID='eu-west-1_CpM4u8eAY' react-scripts start",
-    "build:staging": "REACT_APP_API='https://stagingapi.juholehtimaki.com' REACT_APP_USER_POOL_CLIENT_ID='4guludrvbkn4csjgvddumern5d' REACT_APP_USER_POOL_ID='eu-west-1_CpM4u8eAY' react-scripts build",
+    "start": "REACT_APP_API='https://stagingapi.juholehtimaki.com' REACT_APP_USER_POOL_CLIENT_ID='6468c77trl567ilg3bg1ndapai' REACT_APP_USER_POOL_ID='eu-west-1_VrZRgvHjF' react-scripts start",
+    "build:staging": "REACT_APP_API='https://stagingapi.juholehtimaki.com' REACT_APP_USER_POOL_CLIENT_ID='6468c77trl567ilg3bg1ndapai' REACT_APP_USER_POOL_ID='eu-west-1_VrZRgvHjF' react-scripts build",
     "build:production": "REACT_APP_API='https://productionapi.juholehtimaki.com' REACT_APP_USER_POOL_CLIENT_ID='ghkckmh70l7u00iikpvs5qmpg' REACT_APP_USER_POOL_ID='eu-west-1_7V4bHqW88' react-scripts build",
     "lint": "eslint --ext ts,tsx src",
     "test": "react-scripts test",
